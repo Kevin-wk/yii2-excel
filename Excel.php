@@ -58,10 +58,10 @@ class Excel
         int $rowIndex = 0;
         foreach ($data as $payable) {
             //Excel的第A列，uid是你查出数组的键值，下面以此类推
-            $startChar = 'A';
+            $startCharAscii = 65;
             for ($columnIndex = 0; $columnIndex < $columnCount; $columnIndex++) {
-                $currentChar = $startChar + 1;
-                $objActiveSheet->setCellValue($currentChar . $rowIndex, $payable[$columnIndex]);
+                $currentCharAscii = $startChar + 1;
+                $objActiveSheet->setCellValue(chr($currentCharAscii) . $rowIndex, $payable[$columnIndex]);
             }
             $rowIndex += 1;
         }
@@ -74,6 +74,7 @@ class Excel
         header('Cache-Control: max-age=0');
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');
+        exit;
 
     }
 
