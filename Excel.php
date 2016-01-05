@@ -31,7 +31,7 @@ class Excel
     /**
      * @brief 将数组导出成为excel文件记录
      *
-     * @param array $data 数组
+     * @param array $data 数组,数组的第一个元素是数组的相关模板信息
      * @param string $type 导出的excel文件类型
      * @return  public function 
      * @retval   
@@ -40,29 +40,34 @@ class Excel
      * @author 吕宝贵
      * @date 2016/01/02 23:46:49
     **/
-    public function exportArrayToExcel(array $data, $type ) {
-        $this->objPHPExcel->getProperties()->setCreator('Mr-Hug')
-            ->setLastModifiedBy('Mr-Hug')
-            ->setTitle('银行批量付款' . date(time()))
-            ->setSubject('数银行批量付')
-            ->setDescription('银行付款记录数据')
-            ->setKeywords('excel')
-            ->setCategory('result file');
+    public function exportArrayToExcel(array $data, array $meta, $type) {
+        $this->objPHPExcel->getProperties()->setCreator($meta['author'])
+            ->setLastModifiedBy($meta['modify_user'])
+            ->setTitle($meta['title'])
+            ->setSubject($meta['subject'])
+            ->setDescription($meta['description'])
+            ->setKeywords($meta['keywords'])
+            ->setCategory($meta['category']);
 
-        int $num = 1;
+        $objePHPExcel->setActiveSheetIndex(0);
+        $objActiveSheet = $objPHPExcel->getActiveSheet();
+        $objActiveSheet->setTitle($meta['title']);
+
+        $columnCount = count($data[0]);
+
+        int $rowIndex = 0;
         foreach ($data as $payable) {
-            $objPHPExcel->setActiveSheetIndex(0)
-                //Excel的第A列，uid是你查出数组的键值，下面以此类推
-                ->setCellValue('A'.$num, $payable['uid'])    
-                ->setCellValue('B'.$num, $payable['email'])
-                ->setCellValue('C'.$num, $payable['password'])
-                ->setCellValue('D'.$num, $payable['password'])
-                ->setCellValue('E'.$num, $payable['password']);
-            $num += 1;
+            //Excel的第A列，uid是你查出数组的键值，下面以此类推
+            $startChar = 'A';
+            for ($columnIndex = 0; $columnIndex < $columnCount; $columnIndex++) {
+                $currentChar = $startChar + 1;
+                $objActiveSheet->setCellValue($currentChar . $rowIndex, $payable[$columnIndex]);
+            }
+            $rowIndex += 1;
         }
 
-        $filename = '待付款明细' . date('Y-m-d', time());
-        $objPHPExcel->getActiveSheet()->setTitle('付款明细');
+        $filename = $meta['filename'];
+        $objPHPExcel->getActiveSheet()->setTitle('明细记录');
         $objPHPExcel->setActiveSheetIndex(0);
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
@@ -82,7 +87,7 @@ class Excel
      * @author 吕宝贵
      * @date 2016/01/02 23:46:14
     **/
-    public function importFromFile($file) {
+    public function load($file) {
 
     }
 
