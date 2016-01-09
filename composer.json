@@ -1,0 +1,18 @@
+{
+    "name": "lubaogui/yii2-excel",
+    "description": "yii2 excel extension",
+    "authors": [
+        {
+            "name": "lubaogui",
+            "email": "lbaogui@pku.edu.cn"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    }
+    "autoload": {
+        "psr-4": {
+            "lubaogui\\excel\\": ""
+        }
+    }
+}
