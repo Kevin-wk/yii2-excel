@@ -43,11 +43,7 @@ class Excel
     public function exportToExcel(array $data, array $meta, $type = 1) {
 
         //字符集转换，excel使用gbk字符集
-        $callbackFunc = function(&$value, $key) {
-            mb_convert_encoding($value, 'gbk', 'utf-8');
-        };
-
-        array_walk($meta, 'callbackFunc');
+        array_walk($meta, [$this, 'convertToGBK']);
 
         $this->objPHPExcel->getProperties()->setCreator($meta['author'])
             ->setLastModifiedBy($meta['modify_user'])
@@ -98,6 +94,21 @@ class Excel
     **/
     public function load($file) {
 
+    }
+
+    /**
+     * @brief 转换字符集至GBK
+     *
+     * @param [in/out] $value : &
+     * @return  protected function 
+     * @retval   
+     * @see 
+     * @note 
+     * @author 吕宝贵
+     * @date 2016/01/12 16:09:08
+    **/
+    protected function convertToGBK(&$value, $key) {
+        mb_convert_encoding($value, 'gbk', 'utf-8');
     }
 
 }
