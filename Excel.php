@@ -16,7 +16,7 @@ use yii\base\Exception;
  * @version since 2.0
  */
 
-require_once './classes/PHPExcel.php';
+require_once __DIR__. '/classes/PHPExcel.php';
 
 class Excel 
 {
@@ -40,7 +40,15 @@ class Excel
      * @author 吕宝贵
      * @date 2016/01/02 23:46:49
     **/
-    public function exportArrayToExcel(array $data, array $meta, $type) {
+    public function exportToExcel(array $data, array $meta, $type = 1) {
+
+        //字符集转换，excel使用gbk字符集
+        $callbackFunc = function(&$value, $key) {
+            mb_convert_encoding($value, 'gbk', 'utf-8');
+        };
+
+        array_walk($meta, 'callbackFunc');
+
         $this->objPHPExcel->getProperties()->setCreator($meta['author'])
             ->setLastModifiedBy($meta['modify_user'])
             ->setTitle($meta['title'])
@@ -49,32 +57,32 @@ class Excel
             ->setKeywords($meta['keywords'])
             ->setCategory($meta['category']);
 
-        $objePHPExcel->setActiveSheetIndex(0);
-        $objActiveSheet = $objPHPExcel->getActiveSheet();
+        $this->objPHPExcel->setActiveSheetIndex(0);
+        $objActiveSheet = $this->objPHPExcel->getActiveSheet();
         $objActiveSheet->setTitle($meta['title']);
 
         $columnCount = count($data[0]);
 
-        int $rowIndex = 0;
+        $rowIndex = 0;
         foreach ($data as $payable) {
             //Excel的第A列，uid是你查出数组的键值，下面以此类推
             $startCharAscii = 65;
             for ($columnIndex = 0; $columnIndex < $columnCount; $columnIndex++) {
-                $currentCharAscii = $startChar + 1;
+                $currentCharAscii = $startCharAscii + 1;
                 $objActiveSheet->setCellValue(chr($currentCharAscii) . $rowIndex, $payable[$columnIndex]);
             }
             $rowIndex += 1;
         }
 
         $filename = $meta['filename'];
-        $objPHPExcel->getActiveSheet()->setTitle('明细记录');
-        $objPHPExcel->setActiveSheetIndex(0);
+        $this->objPHPExcel->getActiveSheet()->setTitle('明细记录');
+        $this->objPHPExcel->setActiveSheetIndex(0);
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
         header('Cache-Control: max-age=0');
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter = \PHPExcel_IOFactory::createWriter($this->objPHPExcel, 'Excel5');
+
         $objWriter->save('php://output');
-        exit;
 
     }
 
