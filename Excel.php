@@ -108,7 +108,7 @@ class Excel
      * @date 2016/01/12 16:09:08
     **/
     protected function convertToGBK(&$value, $key) {
-        mb_convert_encoding($value, 'gbk', 'utf-8');
+        $value = mb_convert_encoding($value, 'gbk', 'utf-8');
     }
 
 }
