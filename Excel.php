@@ -56,7 +56,7 @@ class Excel
         $this->objPHPExcel->setActiveSheetIndex(0);
         $objActiveSheet = $this->objPHPExcel->getActiveSheet();
         $objActiveSheet->setTitle($meta['title']);
-
+                
         $columnCount = count($data[0]);
 
         $rowIndex = 1;
@@ -65,7 +65,9 @@ class Excel
             $currentCharAscii = 64;
             for ($columnIndex = 0; $columnIndex < $columnCount; $columnIndex++) {
                 $currentCharAscii += 1;
-                $objActiveSheet->setCellValue(chr($currentCharAscii) . $rowIndex, $payable[$columnIndex]);
+                $objActiveSheet->setCellValueExplicit(chr($currentCharAscii) . $rowIndex, 
+                    $payable[$columnIndex],
+                    \PHPExcel_Cell_DataType::TYPE_STRING);
             }
             $rowIndex += 1;
         }
