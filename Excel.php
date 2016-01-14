@@ -59,12 +59,12 @@ class Excel
 
         $columnCount = count($data[0]);
 
-        $rowIndex = 0;
+        $rowIndex = 1;
         foreach ($data as $payable) {
             //Excel的第A列，uid是你查出数组的键值，下面以此类推
-            $startCharAscii = 65;
+            $currentCharAscii = 64;
             for ($columnIndex = 0; $columnIndex < $columnCount; $columnIndex++) {
-                $currentCharAscii = $startCharAscii + 1;
+                $currentCharAscii += 1;
                 $objActiveSheet->setCellValue(chr($currentCharAscii) . $rowIndex, $payable[$columnIndex]);
             }
             $rowIndex += 1;
