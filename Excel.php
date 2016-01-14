@@ -79,6 +79,7 @@ class Excel
         $objWriter = \PHPExcel_IOFactory::createWriter($this->objPHPExcel, 'Excel5');
 
         $objWriter->save('php://output');
+        return true;
 
     }
 
